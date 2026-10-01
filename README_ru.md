@@ -26,7 +26,7 @@
 `python ver.py`; Python должен быть в PATH). Проект кладётся в `Z-Stack 3.0.2\Projects\zstack\HomeAutomation\geiger`.
 Собирается в IAR EW8051 из Embedded Workbench 8.3 (конфигурация `DIYRuZ_Geiger`: 0 ошибок, 0 предупреждений в коде
 приложения, ~209 КБ кода). Новые версии IAR не находят `?B`/`?IE` при компоновке — добавить в конец
-`Projects\zstack\Tools\CC2530DB8w2530.xcl` две строки:
+`Projects\zstack\Tools\CC2530DB\f8w2530.xcl` две строки:
 
     -D?B=0xF0
     -D?IE=0xA8
