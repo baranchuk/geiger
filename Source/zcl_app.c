@@ -32,6 +32,7 @@
 #include "hal_key.h"
 #include "hal_led.h"
 #include "isr_counter.h"
+#include "buzzer.h"
 
 #include "version.h"
 
@@ -113,6 +114,7 @@ void zclApp_Init(byte task_id) {
 
     LREP("Build %s \r\n", zclApp_DateCodeNT);
 
+    buzzer_init();
     zclApp_InitCounter();
     zclApp_RegisterCounterCallback(zclApp_RadioactiveEventCB);
     osal_start_reload_timer(zclApp_TaskID, APP_REPORT_EVT, APP_REPORT_DELAY);
@@ -147,6 +149,13 @@ uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
         return (events ^ APP_REPORT_EVT);
     }
 
+    if (events & APP_ALARM_EVT) {
+        if (zclApp_Config.BuzzerAlarm) {
+            buzzer_beep(BUZZER_ALARM_MS);
+        }
+        return (events ^ APP_ALARM_EVT);
+    }
+
     if (events & APP_SAVE_ATTRS_EVT) {
         LREPMaster("APP_SAVE_ATTRS_EVT\r\n");
         zclApp_SaveAttributesToNV();
@@ -165,7 +174,8 @@ static void zclApp_Report(void) {
     zclApp_Port0CounterValue = 0;
     HAL_EXIT_CRITICAL_SECTION(intState);
 
-    float countsPerSecond = zclApp_RadiationEventsPerMinute / 60.0 / zclApp_Config.SensorsCount;
+    uint8 sensorsCount = zclApp_Config.SensorsCount > 0 ? zclApp_Config.SensorsCount : 1; // 0 written from z2m must not divide by zero
+    float countsPerSecond = zclApp_RadiationEventsPerMinute / 60.0 / sensorsCount;
 
     switch (zclApp_Config.SensorType) {
     case SBM_19:
@@ -189,8 +199,11 @@ static void zclApp_Report(void) {
 
     if (alertStatus != lastAlertStatus) {
         if (alertStatus) {
+            osal_start_reload_timer(zclApp_TaskID, APP_ALARM_EVT, APP_ALARM_PERIOD);
             zclGeneral_SendOnOff_CmdOn(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
         } else {
+            osal_stop_timerEx(zclApp_TaskID, APP_ALARM_EVT);
+            buzzer_stop();
             zclGeneral_SendOnOff_CmdOff(zclApp_FirstEP.EndPoint, &inderect_DstAddr, FALSE, bdb_getZCLFrameCounter());
         }
         lastAlertStatus = alertStatus;
@@ -241,7 +254,7 @@ void zclApp_RadioactiveEventCB(uint8 portNum) {
         }
 
         if (zclApp_Config.BuzzerFeedback) {
-            // TODO: buzzer feedback
+            buzzer_beep(BUZZER_CLICK_MS);
         }
     }
 }

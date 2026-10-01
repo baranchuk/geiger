@@ -18,12 +18,17 @@ extern "C" {
 // Application Events
 #define APP_REPORT_EVT      0x0001
 #define APP_SAVE_ATTRS_EVT  0x0002
+#define APP_ALARM_EVT       0x0004
+
+#define APP_ALARM_PERIOD 1000 // ms between alarm beeps while the level is above AlertTreshold
 
 /*********************************************************************
  * MACROS
  */
 
-#define NW_APP_CONFIG 0x0401
+// 0x0401 held the v1 config (without BuzzerAlarm); a new id makes upgraded devices start from defaults
+// instead of reading a shorter NV record into the larger struct
+#define NW_APP_CONFIG 0x0402
 
 #define R ACCESS_CONTROL_READ
 //ACCESS_CONTROL_AUTH_WRITE
@@ -43,6 +48,7 @@ extern "C" {
 #define ATTRID_RADIATION_SENSORS_COUNT 0xF003
 #define ATTRID_RADIATION_SENSORS_TYPE 0xF004
 #define ATTRID_RADIATION_ALERT_TRESHOLD 0xF005
+#define ATTRID_RADIATION_BUZZER_ALARM 0xF006
 
 #define ATTRID_RADIATION_EVENTS_PER_MINUTE 0xF001
 #define ATTRID_RADIATION_LEVEL_PER_HOUR 0xF002
@@ -67,6 +73,7 @@ typedef struct
     uint8 BuzzerFeedback;
     uint8 SensorsCount;
     RadiationSensorType_t SensorType;
+    uint8 BuzzerAlarm;
 }  application_config_t;
 
 /*********************************************************************

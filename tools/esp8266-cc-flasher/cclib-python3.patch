@@ -1,0 +1,53 @@
+diff --git a/Python/cclib/ccproxy.py b/Python/cclib/ccproxy.py
+index d2bf1c0..cfb8d42 100644
+--- a/Python/cclib/ccproxy.py
++++ b/Python/cclib/ccproxy.py
+@@ -82,9 +82,9 @@ class CCLibProxy:
+ 			else:
+ 				# Open port
+ 				try:
+-					self.ser = serial.Serial(port, baudrate=9600, timeout=3.0, write_timeout=3.0)
++					self.ser = serial.Serial(port, baudrate=115200, timeout=3.0, write_timeout=3.0)
+ 					self.port = port
+-					time.sleep(3)
++					time.sleep(4)
+ 				except:
+ 					raise IOError("Could not open port %s" % port)
+ 
+@@ -159,15 +159,15 @@ class CCLibProxy:
+ 		b = self.ser.read()
+ 		if len(b) == 0:
+ 			raise IOError("Could not read from the serial port!")
+-		status = ord(b)
++		status = b[0]
+ 		b = self.ser.read()
+ 		if len(b) == 0:
+ 			raise IOError("Could not read from the serial port!")
+-		bH = ord(b)
++		bH = b[0]
+ 		b = self.ser.read()
+ 		if len(b) == 0:
+ 			raise IOError("Could not read from the serial port!")
+-		bL = ord(b)
++		bL = b[0]
+ 
+ 		# Handle error responses
+ 		if status == ANS_ERROR:
+@@ -201,7 +201,7 @@ class CCLibProxy:
+ 		"""
+ 
+ 		# Send the 4-byte command frame
+-		self.ser.write( chr(cmd)+chr(c1)+chr(c2)+chr(c3) )
++		self.ser.write( bytes([cmd & 0xFF, c1 & 0xFF, c2 & 0xFF, c3 & 0xFF]) )
+ 		self.ser.flush()
+ 
+ 		# Read frame
+@@ -397,7 +397,7 @@ class CCLibProxy:
+ 
+ 		# Start sending data
+ 		for b in table:
+-			self.ser.write(chr(b & 0xFF))
++			self.ser.write(bytes([b & 0xFF]))
+ 		self.ser.flush()
+ 
+ 		# Get confirmation

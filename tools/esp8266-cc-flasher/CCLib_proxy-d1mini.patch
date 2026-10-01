@@ -1,0 +1,36 @@
+--- CCLib_proxy.ino.orig
++++ CCLib_proxy.ino
+@@ -35,10 +35,10 @@
+ ////////////////////////////////////////
+ 
+ // Pinout configuration (Configured for Arduino Leonardo)
+-int CC_RST   = 5;
+-int CC_DC    = 4;
+-int CC_DD_I  = 3;
+-int CC_DD_O  = 2;
++int CC_RST   = 5;   // D1
++int CC_DC    = 4;   // D2
++int CC_DD_I  = 14;  // D5
++int CC_DD_O  = 14;  // D5 too: one bidirectional DD wire (3.3 V ESP, no divider needed)
+ 
+ // Change this if you are using an external led
+ int LED      = LED_BUILTIN;
+@@ -48,6 +48,7 @@
+  
+ // Include the CCDebugger
+ #include "CCDebugger.h"
++#include <ESP8266WiFi.h>
+ 
+ // Command constants
+ #define   CMD_ENTER     byte(0x01)
+@@ -92,7 +93,9 @@
+   
+   // Initialize serial port
+   //Serial.begin(115200);
+-  Serial.begin(9600);
++  WiFi.mode(WIFI_OFF); WiFi.forceSleepBegin();   // radio off: no 300 mA TX peaks on the shared 3V3
++  Serial.setRxBufferSize(4096);                  // a whole 2 KB burst fits: no overrun while bit-banging DD
++  Serial.begin(115200);
+   
+   // Wait for chip to initialize
+   delay(100);

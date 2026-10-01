@@ -3435,6 +3435,12 @@
             </file>
         </group>
         <file>
+            <name>$PROJ_DIR$\..\Source\buzzer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\Source\buzzer.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\Source\isr_counter.c</name>
         </file>
         <file>
