@@ -22,7 +22,8 @@ extern "C" {
 #define APP_BOOT_IND_EVT    0x0008
 
 #define APP_ALARM_PERIOD 1000 // ms between alarm beeps while the level is above AlertTreshold
-#define BOOT_IND_PERIOD 300   // ms, boot LED blink period = gap between the two boot beeps
+#define BOOT_IND_DELAY 500    // ms after init: LED is lit by the reset pull-up during boot, keep it dark first
+#define BOOT_IND_STEP 150     // ms per on/off phase: on+beep, off, on+beep, off
 
 /*********************************************************************
  * MACROS
