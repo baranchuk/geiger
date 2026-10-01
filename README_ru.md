@@ -23,7 +23,19 @@
 Прошивка модуля через ESP8266 (D1 mini) вместо CC Debugger: `tools/esp8266-cc-flasher/README.md`.
 
 Сборка: IAR Embedded Workbench for 8051 + Z-Stack 3.0.2 (проект `CC2530DB/GenericApp.eww`, перед сборкой
-`python ver.py`). Изменения этого форка ещё не проверены сборкой и на железе — см. историю коммитов.
+`python ver.py`; Python должен быть в PATH). Проект кладётся в `Z-Stack 3.0.2\Projects\zstack\HomeAutomation\geiger`.
+Собирается в IAR EW8051 из Embedded Workbench 8.3 (конфигурация `DIYRuZ_Geiger`: 0 ошибок, 0 предупреждений в коде
+приложения, ~209 КБ кода). Новые версии IAR не находят `?B`/`?IE` при компоновке — добавить в конец
+`Projects\zstack\Tools\CC2530DB8w2530.xcl` две строки:
+
+    -D?B=0xF0
+    -D?IE=0xA8
+
+Сборка из командной строки:
+
+    IarBuild.exe GenericApp.ewp -make DIYRuZ_Geiger -log warnings
+
+Изменения форка собраны, на железе ещё не проверены.
 
 
 -------------------------
