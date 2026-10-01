@@ -59,6 +59,7 @@ const uint8 zclApp_PowerSource = POWER_SOURCE_MAINS_1_PHASE;
 #define DEFAULT_SensorsCount 1
 #define DEFAULT_SensorType SBM_20
 #define DEFAULT_BuzzerAlarm TRUE
+#define DEFAULT_BootIndication TRUE
 
 application_config_t zclApp_Config = {.SensorSensivity = DEFAULT_SensorSensivity,
                                       .AlertTreshold = DEFAULT_AlertTreshold,
@@ -66,7 +67,8 @@ application_config_t zclApp_Config = {.SensorSensivity = DEFAULT_SensorSensivity
                                       .BuzzerFeedback = DEFAULT_BuzzerFeedback,
                                       .SensorsCount = DEFAULT_SensorsCount,
                                       .SensorType = DEFAULT_SensorType,
-                                      .BuzzerAlarm = DEFAULT_BuzzerAlarm};
+                                      .BuzzerAlarm = DEFAULT_BuzzerAlarm,
+                                      .BootIndication = DEFAULT_BootIndication};
 
 uint16 zclApp_RadiationEventsPerMinute = 0;     // pulses per minute
 uint32 zclApp_RadiationLevelParrotsPerHour = 0; // parrots per hour
@@ -97,6 +99,7 @@ CONST zclAttrRec_t zclApp_AttrsFirstEP[] = {
     {ILLUMINANCE_CONFIG, {ATTRID_RADIATION_SENSORS_TYPE, ZCL_DATATYPE_ENUM8, RW, (void *)&zclApp_Config.SensorType}},
     {ILLUMINANCE_CONFIG, {ATTRID_RADIATION_ALERT_TRESHOLD, ZCL_UINT32, RW, (void *)&zclApp_Config.AlertTreshold}},
     {ILLUMINANCE_CONFIG, {ATTRID_RADIATION_BUZZER_ALARM, ZCL_DATATYPE_BOOLEAN, RW, (void *)&zclApp_Config.BuzzerAlarm}},
+    {ILLUMINANCE_CONFIG, {ATTRID_RADIATION_BOOT_INDICATION, ZCL_DATATYPE_BOOLEAN, RW, (void *)&zclApp_Config.BootIndication}},
 };
 
 uint8 CONST zclApp_AttrsCount = (sizeof(zclApp_AttrsFirstEP) / sizeof(zclApp_AttrsFirstEP[0]));
@@ -130,4 +133,5 @@ void zclApp_ResetAttributesToDefaultValues(void) {
     zclApp_Config.SensorsCount = DEFAULT_SensorsCount;
     zclApp_Config.SensorType = DEFAULT_SensorType;
     zclApp_Config.BuzzerAlarm = DEFAULT_BuzzerAlarm;
+    zclApp_Config.BootIndication = DEFAULT_BootIndication;
 }

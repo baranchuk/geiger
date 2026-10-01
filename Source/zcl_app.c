@@ -118,6 +118,13 @@ void zclApp_Init(byte task_id) {
     zclApp_InitCounter();
     zclApp_RegisterCounterCallback(zclApp_RadioactiveEventCB);
     osal_start_reload_timer(zclApp_TaskID, APP_REPORT_EVT, APP_REPORT_DELAY);
+
+    if (zclApp_Config.BootIndication) {
+        // firmware started and settings were read: two LED blinks with two beeps
+        HalLedBlink(HAL_LED_1, 2, 50, BOOT_IND_PERIOD);
+        buzzer_beep(BUZZER_BOOT_MS);
+        osal_start_timerEx(zclApp_TaskID, APP_BOOT_IND_EVT, BOOT_IND_PERIOD);
+    }
 }
 
 uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
@@ -147,6 +154,11 @@ uint16 zclApp_event_loop(uint8 task_id, uint16 events) {
         LREPMaster("APP_REPORT_EVT\r\n");
         zclApp_Report();
         return (events ^ APP_REPORT_EVT);
+    }
+
+    if (events & APP_BOOT_IND_EVT) {
+        buzzer_beep(BUZZER_BOOT_MS); // second beep, in step with the second LED blink
+        return (events ^ APP_BOOT_IND_EVT);
     }
 
     if (events & APP_ALARM_EVT) {

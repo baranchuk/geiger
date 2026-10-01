@@ -19,8 +19,10 @@ extern "C" {
 #define APP_REPORT_EVT      0x0001
 #define APP_SAVE_ATTRS_EVT  0x0002
 #define APP_ALARM_EVT       0x0004
+#define APP_BOOT_IND_EVT    0x0008
 
 #define APP_ALARM_PERIOD 1000 // ms between alarm beeps while the level is above AlertTreshold
+#define BOOT_IND_PERIOD 300   // ms, boot LED blink period = gap between the two boot beeps
 
 /*********************************************************************
  * MACROS
@@ -49,6 +51,7 @@ extern "C" {
 #define ATTRID_RADIATION_SENSORS_TYPE 0xF004
 #define ATTRID_RADIATION_ALERT_TRESHOLD 0xF005
 #define ATTRID_RADIATION_BUZZER_ALARM 0xF006
+#define ATTRID_RADIATION_BOOT_INDICATION 0xF007
 
 #define ATTRID_RADIATION_EVENTS_PER_MINUTE 0xF001
 #define ATTRID_RADIATION_LEVEL_PER_HOUR 0xF002
@@ -74,6 +77,7 @@ typedef struct
     uint8 SensorsCount;
     RadiationSensorType_t SensorType;
     uint8 BuzzerAlarm;
+    uint8 BootIndication;
 }  application_config_t;
 
 /*********************************************************************

@@ -9,6 +9,7 @@
 
 #define BUZZER_CLICK_MS 4    // per detected particle: a short "tick"
 #define BUZZER_ALARM_MS 250  // alarm beep length, repeated every APP_ALARM_PERIOD
+#define BUZZER_BOOT_MS 80    // boot indication: two beeps of this length
 
 extern void buzzer_init(void);
 extern void buzzer_beep(uint16 ms); // safe from an ISR; only ever lengthens an ongoing beep
